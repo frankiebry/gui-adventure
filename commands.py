@@ -56,5 +56,8 @@ commands_dict = {
     ],
     "debug": [
         "cheat", "debug"
-    ]
+    ],
+    "quit": [
+        "quit", "exit", "end", "stop"
+    ],
 }

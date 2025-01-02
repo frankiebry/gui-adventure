@@ -1,15 +1,34 @@
+import tkinter as tk
+import ttkbootstrap as ttk
 from monster import Monster
-from typewriter import typewriter
 from settings import settings
 from utils import calculate_distance
 from commands import commands_dict 
 from inventory import inventory
 
-# Our main game class
 class Game:
-    def __init__(self):
+    def __init__(self, root):
         """Initialize the game by resetting to default settings."""
         self.reset_game() # Reset the game to its initial state with default settings
+        
+        self.root = root
+        self.root.title("Text Adventure")
+        self.root.geometry("1020x768")  # Set the window size
+        
+        # Define a common font
+        font = ("Terminal", 20)
+
+        # Create the large text box for game messages
+        self.message_box = tk.Text(root, height=20, width=60, font=font, state=tk.DISABLED, wrap=tk.WORD)
+        self.message_box.pack(pady=10)
+
+        # Create the smaller text box for player input
+        self.input_box = tk.Entry(root, width=60, font=font)
+        self.input_box.pack(pady=10)
+        self.input_box.bind("<Return>", self.process_input)  # Bind the Enter key to process_input
+
+        # Display a welcome message
+        self.display_message("You find yourself in a dark cave. Type your commands below.\n")
 
     def reset_game(self):
         """Reset the game to its initial state with default settings."""
@@ -19,7 +38,7 @@ class Game:
         self.player_position = settings.DEFAULT_PLAYER_POS
         self.key_position = settings.DEFAULT_KEY_POS
         self.exit_position = settings.DEFAULT_EXIT_POS
-        self.monster = Monster(settings.DEFAULT_MONSTER_POS)
+        self.monster = Monster(settings.DEFAULT_MONSTER_POS, self)
 
     def draw_map(self, show_key=False):
         """
@@ -33,45 +52,45 @@ class Game:
         # Mark the spots the player has already dug on the map
         for pos in self.searched_positions: 
             x, y = pos
-            grid[y][x] = '\033[96m⛝ \033[0m' # Use ANSI escape codes for colored text - Bright Cyan
+            grid[y][x] = '⛝ '
         
         # Draw the player location on the map
         player_x, player_y = self.player_position
-        grid[player_y][player_x] = '\033[92m♙ \033[0m' # Bright Green
+        grid[player_y][player_x] = '♙ '
         
         # Draw the monster location on the map
         monster_x, monster_y = self.monster.position
-        grid[monster_y][monster_x] = '\033[91m♞ \033[0m' # Bright Red
+        grid[monster_y][monster_x] = '♞ '
         
         exit_x, exit_y = self.exit_position
-        grid[exit_y][exit_x] = '⬕ ' # Default White
+        grid[exit_y][exit_x] = '⬕ '
         
         # Draw the key if cheat is used and key is still on the map
         if show_key and self.key_position:
             key_x, key_y = self.key_position
-            grid[key_y][key_x] = '\033[93m⚿ \033[0m' # Bright Yellow
-        for row in grid: # Print the map row by row
-            print(''.join(row))
+            grid[key_y][key_x] = '⚿ '
+        for row in grid: # draw the map row by row
+            self.display_message(''.join(row))
 
     def light_torch(self):
         """Use a torch to reveal the map and display helpful information."""
         if inventory.has_item("torch"): # Check if the player has any torches left
             inventory.use_item("torch")  # Use one torch from inventory
-            typewriter("You light a torch and check your map.", 0.05)
-            print(' ')
+            self.display_message("You light a torch and check your map.")
+            self.display_message(' ')
             self.draw_map()
-            print(' ')
-            typewriter("\033[92m♙\033[0m - Your current location.", 0.05)
-            typewriter("\033[96m⛝\033[0m - Spots where you've already dug.", 0.05)
-            typewriter("\033[91m♞\033[0m - You see an ominous shadowy standing there.", 0.05)
-            typewriter("⬕ - The exit is at this location.", 0.05)
+            self.display_message(' ')
+            self.display_message("♙ - Your current location.")
+            self.display_message("⛝ - Spots where you've already dug.")
+            self.display_message("♞ - You see an ominous shadowy standing there.")
+            self.display_message("⬕ - The exit is at this location.")
     
             if inventory.items["torch"] == 1: # Handle singular vs. plural in the message.
-                typewriter(f'The light has gone out. You have {inventory.items["torch"]} torch left', 0.05)
+                self.display_message(f'The light has gone out. You have {inventory.items["torch"]} torch left')
             else:
-                typewriter(f'The light has gone out. You have {inventory.items["torch"]} torches left', 0.05)
+                self.display_message(f'The light has gone out. You have {inventory.items["torch"]} torches left')
         else:
-            typewriter("You don't have any torches left", 0.05)
+            self.display_message("You don't have any torches left")
 
     def use_metal_detector(self):
         """Use the metal detector to get a hint about the key's location."""
@@ -80,199 +99,143 @@ class Game:
             # Right now this code will always be executed, consider making the metal detector have limited uses
             # or make it a key item that is found from digging
             if self.key_position is None:
-                typewriter("The metal detector is silent.", 0.05)
+                self.display_message("The metal detector is silent.")
             else:
                 distance = calculate_distance(self.player_position, self.key_position)
                 if distance == 0:
-                    typewriter("The metal detector is going wild!!", 0.05)
+                    self.display_message("The metal detector is going wild!!")
                 elif distance == 1:
-                    typewriter("The metal detector is beeping rapidly!", 0.05)
+                    self.display_message("The metal detector is beeping rapidly!")
                 elif distance == 2:
-                    typewriter("The metal detector is slowly beeping.", 0.05)
+                    self.display_message("The metal detector is slowly beeping.")
                 else:
-                    typewriter("The metal detector is silent.", 0.05)
+                    self.display_message("The metal detector is silent.")
 
     def use_monster_repellent(self, monster):
         if inventory.has_item("monster repellent"):
             inventory.use_item("monster repellent")
             # Set the repellent effect on the monster
             monster.repellent_turns_left = 3
-            typewriter("You used a \033[95mmonster repellent\033.", 0.05) # why doesn't the "." show up?
-            typewriter("\033[95mYou hear a disgruntled growl as the sound of heavy footfalls fade away.\033[0m", 0.05)
+            self.display_message("You used a \033[95mmonster repellent\033.") # why doesn't the "." show up?
+            self.display_message("\033[95mYou hear a disgruntled growl as the sound of heavy footfalls fade away.\033[0m")
         else:
-            typewriter("You don't have any monster repellent.", 0.05)
+            self.display_message("You don't have any monster repellent.")
 
-    # TODO Can this be written more elegantly?
     def dig(self):
         """Handle the player digging at their current position."""
         if self.player_position in self.searched_positions: # Check if the player has already dug here
-            typewriter("You have already dug here.", 0.05)
+            self.display_message("You have already dug here.")
         else:
             self.searched_positions.append(self.player_position) # Mark the spot as searched
         
             if self.player_position == self.key_position: # Check if the player has found the key
                 inventory.add_item("key", 1)  # Add the key to the inventory
                 self.key_position = None  # Remove the key from the map
-                typewriter("You found the \033[93mkey\033[0m!", 0.05)
-                print(' ')
+                self.display_message("You found the \033[93mkey\033[0m!")
+                self.display_message(' ')
             else:
                 inventory.find_random_item()
 
-    # # Rewrite this entire thing
-    # def display_commands(self):
-    #     """Display the list of available commands to the player."""
-    #     print(' ')
-    #     typewriter("*****************", 0.02)
-    #     typewriter("* Legal commands *", 0.02)
-    #     typewriter("*****************", 0.02)
-    #     print(' ')
-    #     typewriter("MOVE NORTH", 0.02)
-    #     typewriter("MOVE SOUTH", 0.02)
-    #     typewriter("MOVE EAST", 0.02)
-    #     typewriter("MOVE WEST", 0.02)
-    #     typewriter("DIG HERE", 0.02)
-    #     typewriter("USE A TORCH: check your map", 0.02)
-    #     typewriter("SWEEP FOR KEY: use metal detector", 0.02)
-    #     typewriter("UNLOCK DOOR: unlock the exit", 0.02)
-    #     print(' ')
+    def player_move(self, direction):
+        match direction:
+            case "up":
+                if self.player_position[1] > 0:
+                    self.player_position = (self.player_position[0], self.player_position[1] - 1)
+                    self.display_message("You move north.")
+                else:
+                    self.display_message("The way is blocked.")
+            case "down":
+                if self.player_position[1] < settings.GRID_HEIGHT - 1:
+                    self.player_position = (self.player_position[0], self.player_position[1] + 1)
+                    self.display_message("You move south.")
+                else:
+                    self.display_message("The way is blocked.")
+            case "left":
+                if self.player_position[0] > 0:
+                    self.player_position = (self.player_position[0] - 1, self.player_position[1])
+                    self.display_message("You move west.")
+                else:
+                    self.display_message("The way is blocked.")
+            case "right":
+                if self.player_position[0] < settings.GRID_WIDTH - 1:
+                    self.player_position = (self.player_position[0] + 1, self.player_position[1])
+                    self.display_message("You move east.")
+                else:
+                    self.display_message("The way is blocked.")
 
     def debug(self):
         """Display the full map, including the key's location (cheat/debug mode)."""
-        print(' ')
+        self.display_message(' ')
         self.draw_map(show_key=True) # Show the key on the map
-        print(' ')
-
-    def welcome_screen(self):
-        """Display the welcome screen and explain the rules for first timers."""
-        response = input(
-            "Welcome to Frankie's text based adventure game. Have you played this game before? (Y/N): "
-        ).strip().lower()
-        if response in ['n', 'no']:
-            print(' ')
-            typewriter('Here are the rules...', 0.05)
-            print(' ')
-            typewriter('You are in a dark cave and need to find the \033[93mkey\033[0m to the exit.', 0.05)
-            typewriter('Each turn you can try to do one of the following:', 0.05)
-            typewriter('* Move north, south, east or west', 0.05)
-            typewriter('* Dig to find the \033[93mkey\033[0m. You may also find helpful items or treasure.', 0.05)
-            typewriter('* Use an item from your inventory', 0.05)
-            typewriter('* Check your inventory', 0.05)
-            typewriter('* Try to unlock the exit.', 0.05)
-            typewriter(
-                'Beware, there is a \033[91mmonster\033[0m in the cave with you. '
-                'Each turn the \033[91mmonster\033[0m will move one pace.',
-                0.05
-            )
-            typewriter('Good luck!', 0.05)
+        self.display_message(' ')
 
     def play_again(self):
         """Prompt the player to decide whether to play again."""
-        response = input("Do you want to play again? (Y/N): ").strip().lower()
-        return response in ["y", "yes"]
+        player_input = input("Do you want to play again? (Y/N): ").strip().lower()
+        return player_input in ["y", "yes"]
 
-    def run(self):
-        """Run the main game loop, handling player commands and game logic."""
-        self.welcome_screen()
-        while True:
-            print(' ')
-            command = input("What do you want to do?: ").strip().lower()
-            monster_should_move = True # Assume the monster will move on each turn by default
+    def display_message(self, message):
+        """Display a message in the message box."""
+        self.message_box.config(state=tk.NORMAL)  # Enable editing
+        self.message_box.insert(tk.END, message + "\n")  # Add the message
+        self.message_box.config(state=tk.DISABLED)  # Disable editing
+        # self.message_box.see(tk.END)  # Scroll to the bottom
 
-            # We are using a dictionary of lists to store the possible commands
-            match command:
-                case _ if command in commands_dict["up"]:
-                    if self.player_position[1] > 0:
-                        self.player_position = (self.player_position[0], self.player_position[1] - 1)
-                        typewriter("You moved north.", 0.05)
-                    else:
-                        typewriter("The way is blocked.", 0.05)
+    def process_input(self, event): # Why is event needed?
+        """Handle player input from the input box."""
+        player_input = self.input_box.get().strip()
+        self.input_box.delete(0, tk.END)  # Clear the input box
 
-                case _ if command in commands_dict["down"]:
-                    if self.player_position[1] < settings.GRID_HEIGHT - 1:
-                        self.player_position = (self.player_position[0], self.player_position[1] + 1)
-                        typewriter("You moved south.", 0.05)
-                    else:
-                        typewriter("The way is blocked.", 0.05)
+        if not player_input:
+            return
 
-                case _ if command in commands_dict["right"]:
-                    if self.player_position[0] < settings.GRID_WIDTH - 1:
-                        self.player_position = (self.player_position[0] + 1, self.player_position[1])
-                        typewriter("You moved east.", 0.05)
-                    else:
-                        typewriter("The way is blocked.", 0.05)
+        self.display_message(f"> {player_input}")
 
-                case _ if command in commands_dict["left"]:
-                    if self.player_position[0] > 0:
-                        self.player_position = (self.player_position[0] - 1, self.player_position[1])
-                        typewriter("You moved west.", 0.05)
-                    else:
-                        typewriter("The way is blocked.", 0.05)
+        if player_input in commands_dict["quit"]:
+            self.display_message("Thanks for playing!")
+            self.root.quit()
+            return
 
-                # TODO put this in it's own dig function?
-                case _ if command in commands_dict["dig"]:
-                    self.dig()
+        # Process the command through the game logic
+        monster_should_move = True
 
-                case _ if command in commands_dict["inventory"]:
-                    inventory.show_inventory()
+        match player_input:
+            case _ if player_input in commands_dict["up"]:
+                self.player_move("up")
+            case _ if player_input in commands_dict["down"]:
+                self.player_move("down")
+            case _ if player_input in commands_dict["left"]:
+                self.player_move("left")
+            case _ if player_input in commands_dict["right"]:
+                self.player_move("right")
+            case _ if player_input in commands_dict["dig"]:
+                self.dig()
+                self.display_message("You dig at your current position.")
+            case _ if player_input in commands_dict["torch"]:
+                self.light_torch()
+                self.display_message("You light a torch.")
+            case _ if player_input in commands_dict["sweep"]:
+                self.use_metal_detector()
+                self.display_message("You use the metal detector.")
+            case _ if player_input in commands_dict["inventory"]:
+                self.display_message("Inventory:\n" + inventory.show_inventory())
+            case _ if player_input in commands_dict["debug"]:
+                self.debug()
+                self.display_message("Debug map revealed.")
+                monster_should_move = False
+            case _:
+                self.display_message(f"I don't know what '{player_input}' means.")
+                monster_should_move = False
 
-                case _ if command in commands_dict["torch"]:
-                    self.light_torch()
+        if monster_should_move:
+            self.monster.move(self.player_position)
+            if self.monster.check_if_caught(self.player_position):
+                self.display_message("You were caught by the monster!")
+                self.reset_game()
+                self.display_message("Game reset.")
 
-                case _ if command in commands_dict["sweep"]:
-                    self.use_metal_detector()
-                    
-                case _ if command in commands_dict["repel"]:
-                    self.use_monster_repellent(self.monster)
-                    
-                # Handle all this in a function?
-                case _ if command in commands_dict["unlock"]:
-                    if self.player_position == self.exit_position: # Check if the player is at the exit
-                        if inventory.has_item("key"): # Check if the player has the key
-                            # TODO inventory.use_item to remove key from inventory
-                            typewriter("You unlock the door and escape!", 0.05)
-                            print(' ')
-                            if self.play_again():
-                                self.reset_game()
-                                continue
-                            else:
-                                typewriter("Thank you for playing!", 0.05)
-                                break
-                        else:
-                            typewriter("The door is locked. You need the \033[93mkey\033[0m to open it.", 0.05)
-                    else:
-                        typewriter("There is nothing to unlock here.", 0.05)
 
-                # # re-enable after the commands hints are re-written
-                # case _ if command in commands_dict["help"]:
-                #     self.display_commands()
-                #     monster_should_move = False
-
-                case _ if command in commands_dict["debug"]:
-                    print(' ')
-                    self.debug()
-                    monster_should_move = False
-
-                case _:
-                    typewriter(f'I don\'t know what "{command}" means.', 0.05)
-                    monster_should_move = False
-
-            if monster_should_move:
-                self.monster.move(self.player_position)
-                if self.monster.check_if_caught(self.player_position):
-                    print(' ')
-                    typewriter(f'\033[91mYou were caught by the monster!\33[0m', 0.05)
-                    print(' ')
-                    if self.play_again():
-                        self.reset_game()
-                        continue
-                    else:
-                        typewriter('Thank you for playing!', 0.05)
-                        break
-
-        print(' ')
-        typewriter("GAME OVER", 0.5)
-
-# Run the game if this script is executed
-if __name__ == '__main__':
-    game = Game()
-    game.run()
+# Run the GUI
+root = ttk.Window(themename= 'solar')
+game = Game(root)
+root.mainloop()
