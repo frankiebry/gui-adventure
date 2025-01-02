@@ -7,6 +7,8 @@
 
 ### Ideas for changes/improvements
 - [ ] Find a better theme than darkly? Or more stlying options to fit the dungeon crawler / rpg theme
+- [ ] Create a widget for the map to be displayed in
+- [ ] Create directional buttons and bind to arrow keys
 
 ### Bugs/Issues
 - [ ]
