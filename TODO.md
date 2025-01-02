@@ -1,15 +1,8 @@
 ### Todo
-- [ ] Use typewriter on inventory, it displays too fast
-- [ ] Use colorization on words in inventory
-- [ ] Define key items vs consumable items
-- [ ] Organize the way inventory is displayed in a better way...
-- [ ] Gems are too easy too find, lower chances (nix D20 system) and add gold coins
-- [ ] More immersive writing
-- [ ] Beta test new monster repellent command
-- [ ] Change logic in monster.move() to properly track turns
-- [ ] Test difficulty with repellent, and if it's too easy remove cooldown timer from monster movement
-- [ ] Prevent monster from spawning too close to the player at the start of the game
-- [ ] Display a message when the monster repellent wears off. The condition can't just be repellent_turns_left = 0 because that is the initial state. The message must only appear if the player has used a repellent at least once
+- [ ] Find alternate solution to typewriter function with tkinter
+- [ ] Find alternate solution to text colorization with tkinter
+- [ ] Allow the player to change the text size and window? Scaling?
+- [ ] See [text-based-adventure/TODO.md](https://github.com/frankiebry/text-based-adventure/blob/main/TODO.md) for tasks not related to the tkinter adaption.
 
 ### Ideas for changes/improvements
 - [ ] When monster attacks, it can do something else instead of end the game (lose metal detector, etc)
