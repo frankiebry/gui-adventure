@@ -1,5 +1,4 @@
 import random
-from typewriter import typewriter
 
 class Inventory:
     def __init__(self):
@@ -29,22 +28,22 @@ class Inventory:
         roll = random.randint(1, 20)  # Simulate a D20 roll (integer between 1 and 20)
     
         if 1 <= roll <= 5:  # Nothing: 25% chance
-            typewriter("There is nothing here.", 0.05)
+            return "There is nothing here."
         elif 6 <= roll <= 10: # Torch: 25% chance
             self.add_item("torch", 1)
-            typewriter("You found a torch!", 0.05)
+            return "You found a torch!", 0.05
         elif 11 <= roll <= 15:  # Monster Repellent: 25% chance
             self.add_item("monster repellent", 1)
-            typewriter("You found some \033[95mmonster repellent\033[0m!", 0.05)
+            return "You found some monster repellent!"
         elif 16 <= roll <= 17:  # Ruby: 7.5% chance
             self.add_item("ruby", 1)
-            typewriter("You found a \033[91mruby\033[0m!", 0.05)
+            return "You found a ruby"
         elif 18 <= roll <= 19:  # Emerald: 7.5% chance
             self.add_item("emerald", 1)
-            typewriter("You found an \033[92memerald\033[0m!", 0.05)
+            return "You found an emerald!"
         elif roll == 20:  # Diamond: 5% chance
             self.add_item("diamond", 1)
-            typewriter("You found a \033[96mdiamond\033[0m!", 0.05)
+            return "You found a diamond!"
 
     def use_item(self, item):
         """Use an item from the inventory, if available."""
@@ -57,13 +56,14 @@ class Inventory:
 
     # TODO Pluralize item names if the quantity is greater than 1
     def show_inventory(self):
-        """Display the contents of the player's inventory."""
+        """Return messages representing the player's inventory."""
         if not self.items:
-            print("Your inventory is empty.")
+            return ["Your inventory is empty."]
         else:
-            print("You check the contents of your backpack...")
-            for item, quantity in self.items.items():
-                print(f"- {item.capitalize()}: {quantity}")
+            messages = ["You check the contents of your backpack..."]
+            for item, count in self.items.items():
+                messages.append(f"{item}: {count}")
+            return messages
     
 # Create a single instance of the Inventory class
 inventory = Inventory()

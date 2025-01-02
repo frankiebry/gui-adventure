@@ -131,10 +131,11 @@ class Game:
             if self.player_position == self.key_position: # Check if the player has found the key
                 inventory.add_item("key", 1)  # Add the key to the inventory
                 self.key_position = None  # Remove the key from the map
-                self.display_message("You found the \033[93mkey\033[0m!")
+                self.display_message("You found the key!")
                 self.display_message(' ')
             else:
-                inventory.find_random_item()
+                # We call inventory.find_random_item() and it returns the result here for us to display
+                self.display_message(inventory.find_random_item())
 
     def player_move(self, direction):
         match direction:
@@ -179,7 +180,7 @@ class Game:
         self.message_box.config(state=tk.NORMAL)  # Enable editing
         self.message_box.insert(tk.END, message + "\n")  # Add the message
         self.message_box.config(state=tk.DISABLED)  # Disable editing
-        # self.message_box.see(tk.END)  # Scroll to the bottom
+        self.message_box.see(tk.END)  # Scroll to the bottom
 
     def process_input(self, event): # Why is event needed?
         """Handle player input from the input box."""
@@ -209,16 +210,18 @@ class Game:
             case _ if player_input in commands_dict["right"]:
                 self.player_move("right")
             case _ if player_input in commands_dict["dig"]:
+                self.display_message("You dig where you are currently standing.")
                 self.dig()
-                self.display_message("You dig at your current position.")
             case _ if player_input in commands_dict["torch"]:
                 self.light_torch()
                 self.display_message("You light a torch.")
             case _ if player_input in commands_dict["sweep"]:
-                self.use_metal_detector()
                 self.display_message("You use the metal detector.")
+                self.use_metal_detector()
             case _ if player_input in commands_dict["inventory"]:
-                self.display_message("Inventory:\n" + inventory.show_inventory())
+                inventory_messages = inventory.show_inventory()  # Get inventory messages
+                for message in inventory_messages:
+                    self.display_message(message)  # Display each message
             case _ if player_input in commands_dict["debug"]:
                 self.debug()
                 self.display_message("Debug map revealed.")
@@ -236,6 +239,6 @@ class Game:
 
 
 # Run the GUI
-root = ttk.Window(themename= 'solar')
+root = ttk.Window(themename='darkly')
 game = Game(root)
 root.mainloop()
