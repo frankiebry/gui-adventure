@@ -54,8 +54,8 @@ commands_dict = {
         "help", "commands", "options", "i don't know what to do", "what can i do", 
         "what can i do?", "what do i do", "what do i do?"
     ],
-    "debug": [
-        "cheat", "debug"
+    "cheat": [
+        "cheat"
     ],
     "quit": [
         "quit", "exit", "end", "stop"

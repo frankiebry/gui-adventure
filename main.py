@@ -177,10 +177,11 @@ class Game:
                 else:
                     self.display_message("The way is blocked.")
 
-    def debug(self):
-        """Display the full map, including the key's location (cheat/debug mode)."""
+    def cheat(self):
+        """Display inventory and the full map, including the key's location (cheat mode)."""
         self.display_message(' ')
         self.draw_map(show_key=True) # Show the key on the map
+        inventory.show_inventory()  # Display the player's inventory
         self.display_message(' ')
 
     def play_again(self):
@@ -256,7 +257,7 @@ class Game:
                     self.display_message(message)  # Display each message
             case _ if player_input in commands_dict["unlock"]:
                 self.unlock_door()
-            case _ if player_input in commands_dict["debug"]:
+            case _ if player_input in commands_dict["cheat"]:
                 self.debug()
                 self.display_message("Debug map revealed.")
                 monster_should_move = False
