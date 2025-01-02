@@ -13,7 +13,7 @@ class Game:
         self.awaiting_play_again = False  # Track if waiting for a play-again response
         
         self.root = root
-        self.root.title("Text Adventure")
+        self.root.title("GUI Adventure")
         self.root.geometry("1020x768")  # Set the window size
         
         # Define a common font
@@ -144,12 +144,7 @@ class Game:
             if inventory.has_item("key"):  # Check if the player has the key
                 inventory.use_item("key")  # Remove the key from inventory
                 self.display_message("You unlock the door and escape!")
-                self.display_message(" ")
-                if self.play_again():  # Ask the player if they want to play again
-                    self.reset_game()
-                else:
-                    self.display_message("Thank you for playing!")
-                    self.root.quit()  # Exit the game
+                self.play_again()  # Ask the player if they want to play again.
             else:
                 self.display_message("The door is locked. You need the key to open it.")
         else:
@@ -215,6 +210,10 @@ class Game:
             if player_input in ["y", "yes"]:
                 self.awaiting_play_again = False  # Reset the flag
                 self.reset_game()
+                self.message_box.config(state=tk.NORMAL)  # Enable editing of the message box
+                self.message_box.delete(1.0, tk.END)  # Clear all previous messages
+                self.message_box.config(state=tk.DISABLED)  # Disable editing again
+                self.display_message("You find yourself in a dark cave. Type your commands below.\n")
             elif player_input in ["n", "no"]:
                 self.awaiting_play_again = False  # Reset the flag
                 self.display_message("Thank you for playing!")
@@ -269,14 +268,9 @@ class Game:
             self.monster.move(self.player_position)
             if self.monster.check_if_caught(self.player_position):
                 self.display_message("You were caught by the monster!")
-                if self.play_again():  # Ask the player if they want to play again
-                    self.reset_game()
-                else:
-                    self.display_message("Thank you for playing!")
-                    self.root.quit()  # Exit the game
+                self.play_again()  # Ask the player if they want to play again
 
-
-# Run the GUI
+# Run the game
 root = ttk.Window(themename='darkly')
 game = Game(root)
 root.mainloop()
