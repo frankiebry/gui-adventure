@@ -19,6 +19,9 @@ class Game:
         # Define a common font
         font = ("Terminal", 20)
 
+        self.title_label = ttk.Label(master = window, text='This is a Title', font = font)
+        self.title_label.pack(pady=30)
+
         # Create the large text box for game messages
         self.message_box = tk.Text(window, height=20, width=60, font=font, state=tk.DISABLED, wrap=tk.WORD)
         self.message_box.pack(pady=10)
@@ -27,6 +30,9 @@ class Game:
         self.input_box = tk.Entry(window, width=60, font=font)
         self.input_box.pack(pady=10)
         self.input_box.bind("<Return>", self.process_input)  # Bind the Enter key to process_input
+
+        self.hud = ttk.Label(master = window, text='Put stuff here later', font = font)
+        self.hud.pack(pady=30)
 
         # Display a welcome message
         self.display_message("You find yourself in a dark cave. Type your commands below.\n")
