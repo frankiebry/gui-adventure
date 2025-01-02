@@ -7,24 +7,24 @@ from commands import commands_dict
 from inventory import inventory
 
 class Game:
-    def __init__(self, root):
+    def __init__(self, window):
         """Initialize the game by resetting to default settings."""
         self.reset_game() # Reset the game to its initial state with default settings
         self.awaiting_play_again = False  # Track if waiting for a play-again response
         
-        self.root = root
-        self.root.title("GUI Adventure")
-        self.root.geometry("1020x768")  # Set the window size
+        self.window = window
+        self.window.title("GUI Adventure")
+        self.window.geometry("1020x768")  # Set the window size
         
         # Define a common font
         font = ("Terminal", 20)
 
         # Create the large text box for game messages
-        self.message_box = tk.Text(root, height=20, width=60, font=font, state=tk.DISABLED, wrap=tk.WORD)
+        self.message_box = tk.Text(window, height=20, width=60, font=font, state=tk.DISABLED, wrap=tk.WORD)
         self.message_box.pack(pady=10)
 
         # Create the smaller text box for player input
-        self.input_box = tk.Entry(root, width=60, font=font)
+        self.input_box = tk.Entry(window, width=60, font=font)
         self.input_box.pack(pady=10)
         self.input_box.bind("<Return>", self.process_input)  # Bind the Enter key to process_input
 
@@ -220,14 +220,14 @@ class Game:
             elif player_input in ["n", "no"]:
                 self.awaiting_play_again = False  # Reset the flag
                 self.display_message("Thank you for playing!")
-                self.root.quit()  # Exit the game
+                self.window.quit()  # Exit the game
             else:
                 self.display_message("Please answer 'Y' or 'N'.")
             return
 
         if player_input in commands_dict["quit"]:
             self.display_message("Thanks for playing!")
-            self.root.quit()
+            self.window.quit()
             return
 
         # Process the command through the game logic
@@ -271,6 +271,6 @@ class Game:
                 self.play_again()  # Ask the player if they want to play again
 
 # Run the game
-root = ttk.Window(themename='darkly')
-game = Game(root)
-root.mainloop()
+window = ttk.Window(themename='darkly')
+game = Game(window)
+window.mainloop()
