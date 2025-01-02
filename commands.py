@@ -22,7 +22,7 @@ commands_dict = {
     "inventory": [
         "check inventory", "show inventory", "view inventory", "view my inventory",
         "what do i have", "what do i have?", "what's in my inventory", "what's in my inventory?"
-        "check my items", "check my items?", "check items", "check items?"
+        "check my items", "check my items?", "check items", "check items?", "check my inventory"
     ],
     "torch": [
         "light torch", "light a torch", "use torch", "use a torch", "look around", "light my torch",
