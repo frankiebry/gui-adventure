@@ -181,7 +181,9 @@ class Game:
         """Display inventory and the full map, including the key's location (cheat mode)."""
         self.display_message(' ')
         self.draw_map(show_key=True) # Show the key on the map
-        inventory.show_inventory()  # Display the player's inventory
+        inventory_messages = inventory.show_inventory()  # Get inventory messages
+        for message in inventory_messages:
+            self.display_message(message)  # Display each message
         self.display_message(' ')
 
     def play_again(self):
@@ -241,13 +243,10 @@ class Game:
             case _ if player_input in commands_dict["right"]:
                 self.player_move("right")
             case _ if player_input in commands_dict["dig"]:
-                self.display_message("You dig where you are currently standing.")
                 self.dig()
             case _ if player_input in commands_dict["torch"]:
                 self.light_torch()
-                self.display_message("You light a torch.")
             case _ if player_input in commands_dict["sweep"]:
-                self.display_message("You use the metal detector.")
                 self.use_metal_detector()
             case _ if player_input in commands_dict["repel"]:
                 self.use_monster_repellent(self.monster)
@@ -259,11 +258,11 @@ class Game:
                 self.unlock_door()
             case _ if player_input in commands_dict["cheat"]:
                 self.cheat()
-                self.display_message("Debug map revealed.")
                 monster_should_move = False
             case _:
                 self.display_message(f"I don't know what '{player_input}' means.")
                 monster_should_move = False
+        self.display_message(' ') # print blank line after every command
 
         if monster_should_move:
             self.monster.move(self.player_position)
