@@ -258,7 +258,7 @@ class Game:
             case _ if player_input in commands_dict["unlock"]:
                 self.unlock_door()
             case _ if player_input in commands_dict["cheat"]:
-                self.debug()
+                self.cheat()
                 self.display_message("Debug map revealed.")
                 monster_should_move = False
             case _:
