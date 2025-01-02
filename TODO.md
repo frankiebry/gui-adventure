@@ -15,3 +15,4 @@
 
 ### Cleaner Code
 - [ ] Currently passing the game class into the monster class so the monster class can display messages. Change this so that messages are handled in game (the way you did with the inventory class) or create a new separate class for messages.
+- [ ] Reorganize functions into a logical order

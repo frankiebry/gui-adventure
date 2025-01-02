@@ -116,8 +116,8 @@ class Game:
             inventory.use_item("monster repellent")
             # Set the repellent effect on the monster
             monster.repellent_turns_left = 3
-            self.display_message("You used a \033[95mmonster repellent\033.") # why doesn't the "." show up?
-            self.display_message("\033[95mYou hear a disgruntled growl as the sound of heavy footfalls fade away.\033[0m")
+            self.display_message("You used a monster repellent.")
+            self.display_message("You hear a disgruntled growl as the sound of heavy footfalls fade away.")
         else:
             self.display_message("You don't have any monster repellent.")
 
@@ -218,6 +218,8 @@ class Game:
             case _ if player_input in commands_dict["sweep"]:
                 self.display_message("You use the metal detector.")
                 self.use_metal_detector()
+            case _ if player_input in commands_dict["repel"]:
+                self.use_monster_repellent(self.monster)
             case _ if player_input in commands_dict["inventory"]:
                 inventory_messages = inventory.show_inventory()  # Get inventory messages
                 for message in inventory_messages:
