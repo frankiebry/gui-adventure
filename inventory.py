@@ -31,7 +31,7 @@ class Inventory:
             return "There is nothing here."
         elif 6 <= roll <= 10: # Torch: 25% chance
             self.add_item("torch", 1)
-            return "You found a torch!", 0.05
+            return "You found a torch!"
         elif 11 <= roll <= 15:  # Monster Repellent: 25% chance
             self.add_item("monster repellent", 1)
             return "You found some monster repellent!"

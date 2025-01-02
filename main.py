@@ -10,6 +10,7 @@ class Game:
     def __init__(self, root):
         """Initialize the game by resetting to default settings."""
         self.reset_game() # Reset the game to its initial state with default settings
+        self.awaiting_play_again = False  # Track if waiting for a play-again response
         
         self.root = root
         self.root.title("Text Adventure")
@@ -137,6 +138,23 @@ class Game:
                 # We call inventory.find_random_item() and it returns the result here for us to display
                 self.display_message(inventory.find_random_item())
 
+    def unlock_door(self):
+        """Handle the unlock action."""
+        if self.player_position == self.exit_position:  # Check if the player is at the exit
+            if inventory.has_item("key"):  # Check if the player has the key
+                inventory.use_item("key")  # Remove the key from inventory
+                self.display_message("You unlock the door and escape!")
+                self.display_message(" ")
+                if self.play_again():  # Ask the player if they want to play again
+                    self.reset_game()
+                else:
+                    self.display_message("Thank you for playing!")
+                    self.root.quit()  # Exit the game
+            else:
+                self.display_message("The door is locked. You need the key to open it.")
+        else:
+            self.display_message("There is nothing to unlock here.")
+
     def player_move(self, direction):
         match direction:
             case "up":
@@ -171,9 +189,9 @@ class Game:
         self.display_message(' ')
 
     def play_again(self):
-        """Prompt the player to decide whether to play again."""
-        player_input = input("Do you want to play again? (Y/N): ").strip().lower()
-        return player_input in ["y", "yes"]
+        """Ask the player if they want to play again."""
+        self.awaiting_play_again = True  # Set the flag to indicate we're awaiting a response
+        self.display_message("Do you want to play again? (Y/N)")
 
     def display_message(self, message):
         """Display a message in the message box."""
@@ -191,6 +209,19 @@ class Game:
             return
 
         self.display_message(f"> {player_input}")
+
+        # Check if we're awaiting a play-again response
+        if self.awaiting_play_again:
+            if player_input in ["y", "yes"]:
+                self.awaiting_play_again = False  # Reset the flag
+                self.reset_game()
+            elif player_input in ["n", "no"]:
+                self.awaiting_play_again = False  # Reset the flag
+                self.display_message("Thank you for playing!")
+                self.root.quit()  # Exit the game
+            else:
+                self.display_message("Please answer 'Y' or 'N'.")
+            return
 
         if player_input in commands_dict["quit"]:
             self.display_message("Thanks for playing!")
@@ -224,6 +255,8 @@ class Game:
                 inventory_messages = inventory.show_inventory()  # Get inventory messages
                 for message in inventory_messages:
                     self.display_message(message)  # Display each message
+            case _ if player_input in commands_dict["unlock"]:
+                self.unlock_door()
             case _ if player_input in commands_dict["debug"]:
                 self.debug()
                 self.display_message("Debug map revealed.")
@@ -236,8 +269,11 @@ class Game:
             self.monster.move(self.player_position)
             if self.monster.check_if_caught(self.player_position):
                 self.display_message("You were caught by the monster!")
-                self.reset_game()
-                self.display_message("Game reset.")
+                if self.play_again():  # Ask the player if they want to play again
+                    self.reset_game()
+                else:
+                    self.display_message("Thank you for playing!")
+                    self.root.quit()  # Exit the game
 
 
 # Run the GUI
