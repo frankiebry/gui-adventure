@@ -182,7 +182,7 @@ class Game:
         self.message_box.config(state=tk.DISABLED)  # Disable editing
         self.message_box.see(tk.END)  # Scroll to the bottom
 
-    def process_input(self, event): # Why is event needed?
+    def process_input(self, event):
         """Handle player input from the input box."""
         player_input = self.input_box.get().strip()
         self.input_box.delete(0, tk.END)  # Clear the input box
