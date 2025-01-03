@@ -2,6 +2,7 @@ import tkinter as tk
 import ttkbootstrap as ttk
 from monster import Monster
 from settings import settings
+import style
 from utils import calculate_distance
 from commands import commands_dict 
 from inventory import inventory
@@ -14,28 +15,26 @@ class Game:
         
         self.window = window
         self.window.title("GUI Adventure")
-        self.window.geometry("1020x768")  # Set the window size
-        
-        # Define a common font
-        font = ("Terminal", 20)
-
-        self.title_label = ttk.Label(master = window, text='This is a Title', font = font)
-        self.title_label.pack(pady=30)
+        self.window.geometry("1020x600")  # Set the window size
 
         # Create the large text box for game messages
-        self.message_box = tk.Text(window, height=20, width=60, font=font, state=tk.DISABLED, wrap=tk.WORD)
-        self.message_box.pack(pady=10)
+        self.message_box = tk.Text(window, height=20, width=60, font=style.game_font, state=tk.DISABLED, wrap=tk.WORD)
+        self.message_box.pack(pady=(20,10))
+
+        self.command_frame = ttk.Frame(master = window)
+        self.command_frame.pack(pady=10)
+
+        # Create the HUD label
+        self.commands_label = ttk.Label(master = self.command_frame, text='Type your commands here: ', font = style.game_font)
+        self.commands_label.pack(side = 'left', pady=10)
 
         # Create the smaller text box for player input
-        self.input_box = tk.Entry(window, width=60, font=font)
-        self.input_box.pack(pady=10)
+        self.input_box = tk.Entry(master = self.command_frame, width=35, font=style.game_font)
+        self.input_box.pack(side = 'left', pady=10)
         self.input_box.bind("<Return>", self.process_input)  # Bind the Enter key to process_input
 
-        self.hud = ttk.Label(master = window, text='Put stuff here later', font = font)
-        self.hud.pack(pady=30)
-
         # Display a welcome message
-        self.display_message("You find yourself in a dark cave. Type your commands below.\n")
+        self.display_message("You find yourself in a dark cave...\n")
 
     def reset_game(self):
         """Reset the game to its initial state with default settings."""
