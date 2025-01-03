@@ -6,6 +6,7 @@ import style
 from utils import calculate_distance
 from commands import commands_dict 
 from inventory import inventory
+import random
 
 class Game:
     def __init__(self, window):
@@ -182,6 +183,20 @@ class Game:
                 else:
                     self.display_message("The way is blocked.")
 
+    def show_hints(self):
+        """Display helpful hints to the player."""
+        hints = [
+            "Try checking your inventory.",
+            "You could check your map, if you could see...",
+            "The metal detector might help you find something.",
+            "You can use torches to light your way.",
+            "The monster doesn't like the smell of repellent.",
+            "You can use the shovel to dig for treasure.",
+            "You can use a key to unlock a door.",
+            "You can move north, south, east, or west.",
+        ]
+        self.display_message(random.choice(hints))
+        
     def cheat(self):
         """Display inventory and the full map, including the key's location (cheat mode)."""
         self.display_message(' ')
@@ -261,6 +276,8 @@ class Game:
                     self.display_message(message)  # Display each message
             case _ if player_input in commands_dict["unlock"]:
                 self.unlock_door()
+            case _ if player_input in commands_dict["help"]:
+                self.show_hints()
             case _ if player_input in commands_dict["cheat"]:
                 self.cheat()
                 monster_should_move = False

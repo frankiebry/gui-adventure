@@ -52,7 +52,10 @@ commands_dict = {
     ],
     "help": [
         "help", "commands", "options", "i don't know what to do", "what can i do", 
-        "what can i do?", "what do i do", "what do i do?"
+        "what can i do?", "what do i do", "what do i do?", "give me a hint", "i need a hint",
+        "i need help", "i need help!", "i need a hint!", "i need a hint", "i need a clue",
+        "what are my options", "what are my options?", "what are my choices", "what are my choices?",
+        "what can i type", "what can i type?", "what can i say", "what can i say?", "what can i input",
     ],
     "cheat": [
         "cheat"
