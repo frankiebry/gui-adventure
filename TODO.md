@@ -1,5 +1,5 @@
 ### Todo
-- [ ] Split the main class into two classes: Game to handle the game logic, and GUI to handle the Tkinter elements
+- [ ] I split the main class into two classes: Game to handle the game logic, and GUI to handle the Tkinter elements, however other classes still need to access Game to use GUI's methods. The game is run through GUI. Is it possible to completely separate it?
 - [ ] Find alternate solution to typewriter function with tkinter
 - [ ] Find alternate solution to text colorization with tkinter
 - [ ] Allow the player to change the text size and window? Scaling?

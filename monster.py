@@ -1,9 +1,10 @@
+# monster.py
 import random
 from settings import settings
 from utils import calculate_distance
 
 class Monster:
-    def __init__(self, initial_position, game):
+    def __init__(self, initial_position, gui):
         """
         Initializes the Monster class with an initial position and the turn counter.
         
@@ -11,7 +12,7 @@ class Monster:
         initial_position (tuple): The (x, y) coordinates of the monster's starting position.
         """
         self.position = initial_position
-        self.game = game
+        self.gui = gui
         self.repellent_turns_left = 0  # Track how many turns the repellent is active
 
     def random_move(self):
@@ -37,7 +38,7 @@ class Monster:
                 self.position = (self.position[0] - 1, self.position[1])
                 break
             elif direction == "yawn":
-                self.game.display_message("You hear a low yawn echoing in the distance.")
+                self.gui.display_message("You hear a low yawn echoing in the distance.")
                 break
 
     def is_near_player(self, player_position):
@@ -118,7 +119,7 @@ class Monster:
             self.avoid_player(player_position)
         # If the monster is close to the player and no repellent is active, it chases the player,
         elif self.is_near_player(player_position):
-            self.game.display_message("You hear a bloodcurdling howl as a foul stench fills the air.")
+            self.gui.display_message("You hear a bloodcurdling howl as a foul stench fills the air.")
             self.chase_player(player_position)
         # else it moves randomly
         else:
