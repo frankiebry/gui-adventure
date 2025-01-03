@@ -60,7 +60,7 @@ class Inventory:
             return ["Your inventory is empty."]
         else:
             messages = ["You check the contents of your backpack..."]
-            for item, count in self.items.items():
+            for item, count in self.items.items(): # rename the "items" dict to "backpack" or something, this is confusing
                 messages.append(f"{item}: {count}")
             return messages
     
