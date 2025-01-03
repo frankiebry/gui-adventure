@@ -181,15 +181,16 @@ class Game:
             "You can move north, south, east, or west.",
         ]
         return random.choice(hints)
-        
-    def cheat(self):
-        """Display inventory and the full map, including the key's location (cheat mode)."""
-        # return display_message(' ')
-        self.draw_map(show_key=True) # Show the key on the map
-        inventory_messages = inventory.show_inventory()  # Get inventory messages
-        for message in inventory_messages:
-            return message  # Display each message
-        return  ' '
+    
+    # TODO: FIX THIS FUNCTION        
+    # def cheat(self):
+    #     """Display inventory and the full map, including the key's location (cheat mode)."""
+    #     # return display_message(' ')
+    #     self.draw_map(show_key=True) # Show the key on the map
+    #     inventory_messages = inventory.show_inventory()  # Get inventory messages
+    #     for message in inventory_messages:
+    #         return message  # Display each message
+    #     return  ' '
 
     def play_again(self):
         """Ask the player if they want to play again."""

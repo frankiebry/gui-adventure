@@ -3,12 +3,16 @@
 - [ ] Find alternate solution to typewriter function with tkinter
 - [ ] Find alternate solution to text colorization with tkinter
 - [ ] Allow the player to change the text size and window? Scaling?
+- [ ] Standardize Function Outputs. Decide between:
+        Returning strings for the caller to handle all display_message calls.
+        Using self.gui.display_message directly in every function.
 - [ ] See [text-based-adventure/TODO.md](https://github.com/frankiebry/text-based-adventure/blob/main/TODO.md) for tasks not related to the tkinter adaption.
 
 ### Ideas for changes/improvements
 - [ ] Find a better theme than darkly? Or more stlying options to fit the dungeon crawler / rpg theme
 - [ ] Create a widget for the map to be displayed in
 - [ ] Create directional buttons and bind to arrow keys
+- [ ] Use State Management (enumerated state system) to handle "awaiting_play_again"? Learn about that first
 
 ### Bugs/Issues
 - [ ]
