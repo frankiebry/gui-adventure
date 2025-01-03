@@ -1,8 +1,8 @@
 ### Todo
+- [ ] Split the main class into two classes: Game to handle the game logic, and GUI to handle the Tkinter elements
 - [ ] Find alternate solution to typewriter function with tkinter
 - [ ] Find alternate solution to text colorization with tkinter
 - [ ] Allow the player to change the text size and window? Scaling?
-- [ ] Split the main class into two classes: Game to handle the game logic, and GUI to handle the Tkinter elements
 - [ ] See [text-based-adventure/TODO.md](https://github.com/frankiebry/text-based-adventure/blob/main/TODO.md) for tasks not related to the tkinter adaption.
 
 ### Ideas for changes/improvements
